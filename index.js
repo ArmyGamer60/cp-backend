@@ -170,7 +170,7 @@ app.post('/api/change-pin', async (req, res) => {
 app.get('/health', (_, res) => res.json({ status: 'ok', clients: clients.size }));
 
 // ── Arrancar ───────────────────────────────────────────────────────────────
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 8080;
 
 initDB().then(() => {
   server.listen(PORT, () => {
