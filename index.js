@@ -55,7 +55,26 @@ async function initDB() {
 }
 
 // ── Middleware ─────────────────────────────────────────────────────────────
-app.use(cors({ origin: process.env.FRONTEND_URL || '*' }));
+app.use(cors({
+  origin: (origin, callback) => {
+    // Allow requests with no origin (mobile apps, curl, etc.)
+    if (!origin) return callback(null, true);
+    // Allow all vercel.app subdomains and the configured frontend URL
+    const allowed = [
+      process.env.FRONTEND_URL,
+      'https://cp-frontend-steel.vercel.app'
+    ].filter(Boolean);
+    if (
+      allowed.includes(origin) ||
+      origin.endsWith('.vercel.app') ||
+      origin.endsWith('.railway.app')
+    ) {
+      return callback(null, true);
+    }
+    return callback(null, true); // allow all for now
+  },
+  credentials: true
+}));
 app.use(express.json());
 
 // ── WebSocket clients ──────────────────────────────────────────────────────
